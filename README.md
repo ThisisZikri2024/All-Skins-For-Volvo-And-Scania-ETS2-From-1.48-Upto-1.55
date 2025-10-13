@@ -14,3 +14,5 @@ Repositori ini bertujuan untuk menambah ratusan jenis skin khas untuk ETS2 versi
 
 ![Photo2](https://github.com/ThisisZikri2024/All-Skins-For-Volvo-And-Scania-ETS2-From-1.48-Upto-1.55/blob/main/ets2_20250824_105604_00.png)
 ![gif](https://media1.tenor.com/m/StyqKufsQ0EAAAAC/benjammins-no-ai.gif)
+> [!Warning]
+> Gambar Jannan Ai Adalah Dilarang Keras Sebagai Modders ETS2, Ianya Menyalahi Peraturan.
