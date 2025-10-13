@@ -13,4 +13,4 @@ Repositori ini bertujuan untuk menambah ratusan jenis skin khas untuk ETS2 versi
 > Muat turun versi release sahaja untuk mendapatkan skin penuh bagi ETS2 1.48 hingga 1.55. Versi pra-lepas (pre-release) mungkin tidak lengkap atau tidak stabil.
 
 ![Photo2](https://github.com/ThisisZikri2024/All-Skins-For-Volvo-And-Scania-ETS2-From-1.48-Upto-1.55/blob/main/ets2_20250824_105604_00.png)
-<div class="tenor-gif-embed" data-postid="5394373554939380545" data-share-method="host" data-aspect-ratio="1" data-width="100%"><a href="https://tenor.com/view/benjammins-no-ai-no-to-ai-say-no-to-ai-ai-no-gif-5394373554939380545">Benjammins No Ai GIF</a>from <a href="https://tenor.com/search/benjammins-gifs">Benjammins GIFs</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+![gif](https://media1.tenor.com/m/StyqKufsQ0EAAAAC/benjammins-no-ai.gif)
