@@ -17,3 +17,5 @@ Repositori ini bertujuan untuk menambah ratusan jenis skin khas untuk ETS2 versi
 ![gif](https://media1.tenor.com/m/StyqKufsQ0EAAAAC/benjammins-no-ai.gif)
 > [!Warning]
 > Gambar Jannan Ai Adalah Dilarang Keras Sebagai Modders ETS2, dikecualikan bagi mereka pemula bidang modding skins ets2
+
+sekarang saya ada berita penting untuk semua sekarang saya berpindah ke canva untuk hasilkan skins ets2 
