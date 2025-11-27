@@ -1,0 +1,12 @@
++Aktif+
+=========================================
+Membina Stickers Untuk Cermin Libatkan Model Lori Scania Dan Juga Volvo Fh4 Atau Fh16.
+
+Membina Skins Untuk Model Scania S Dan Juga Volvo FH4 / FH16
+=========================================
+
+-Tak Aktif-
+=========================================
+Dandy World Dan Juga Roblox
+sebab utama dia adalah menghormati terhadap tragedi dekat batu pahat johor sejak 27 oktober 2025 
+=========================================
