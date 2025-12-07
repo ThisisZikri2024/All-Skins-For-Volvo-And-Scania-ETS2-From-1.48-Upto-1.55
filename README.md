@@ -1,4 +1,4 @@
-##Sekiranya anda mempunyai sebarang maklum balas, cadangan, atau sekadar ingin berkongsi sokongan, anda amat dialu-alukan untuk meninggalkan komen di platform berikut:
+## Sekiranya anda mempunyai sebarang maklum balas, cadangan, atau sekadar ingin berkongsi sokongan, anda amat dialu-alukan untuk meninggalkan komen di platform berikut:
 
 - 💬 [YouTube](https://www.youtube.com/@thisiszikri2024)
 - 💬 [TikTok](https://www.tiktok.com/@thisiszikri2024)
