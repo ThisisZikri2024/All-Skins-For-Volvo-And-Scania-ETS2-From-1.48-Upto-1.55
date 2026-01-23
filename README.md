@@ -5,4 +5,4 @@
 - 💬 [Instagram](https://www.instagram.com/thisiszikri2024)
 - 💬 [X (Twitter)](https://x.com/thisiszikri2024)
 
-
+Masih Lagi Aktif Melibatkan Membuat Mod Khas Untuk ETS2
