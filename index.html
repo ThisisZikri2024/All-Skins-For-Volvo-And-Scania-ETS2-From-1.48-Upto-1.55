@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ETS2 Mods - Custom Vault</title>
+    <title>ETS2 MODS - Custom Vault</title>
     <style>
         :root {
             --primary: #00d2ff;
@@ -127,7 +127,7 @@
             background: rgba(0,0,0,0.7); padding: 5px 12px; border-radius: 20px; font-size: 11px;
         }
 
-        .mod-name { color: var(--primary); font-size: 14px; margin: 5px 0; font-style: italic; }
+        .mod-name-label { color: var(--primary); font-size: 14px; margin: 5px 0; font-style: italic; }
 
         .download-icon { font-size: 50px; text-decoration: none; margin-top: 15px; transition: 0.3s; }
         .download-icon:hover { transform: translateY(-5px); }
@@ -151,9 +151,9 @@
     <div class="input-panel">
         <h3 style="margin-top:0; color:var(--primary)">Cipta Kad Mod ETS2</h3>
         <div class="input-grid">
-            <input type="text" id="inName" placeholder="Nama Mod (e.g. Scania S Highline)">
-            <input type="text" id="inMod" placeholder="Pencipta / Modder">
-            <input type="text" id="inVer" placeholder="Game Versi (e.g 1.50)">
+            <input type="text" id="inName" placeholder="Nama Mod">
+            <input type="text" id="inMod" placeholder="Nama Modder">
+            <input type="text" id="inVer" placeholder="Versi Mod (e.g v1.50)">
             <input type="text" id="inLink" placeholder="Link Download">
             <input type="number" id="inQty" placeholder="Jumlah Kad" min="1">
             
@@ -163,16 +163,17 @@
             </div>
             
             <div class="file-group">
-                <label>Gambar Mod (Front):</label>
+                <label>Latar Mod (Front):</label>
                 <input type="file" id="inBg" accept="image/*">
             </div>
         </div>
-        <button class="main-btn" onclick="buildCards()">TERBITKAN MOD SEKARANG</button>
+        <button class="main-btn" onclick="buildCards()">SIMPAN & TERBITKAN</button>
     </div>
 
     <div class="cards-grid" id="displayGrid"></div>
 
     <script>
+        // --- SISTEM MENU (KLIK) ---
         function toggleMenu(event) {
             event.stopPropagation();
             const dropdown = document.getElementById('myDropdown');
@@ -188,52 +189,92 @@
             }
         }
 
-        async function buildCards() {
+        // --- SISTEM SYNC (LOCALSTORAGE) ---
+        function getSavedData() {
+            return JSON.parse(localStorage.getItem('ets2_mods_data')) || [];
+        }
+
+        function saveData(data) {
+            localStorage.setItem('ets2_mods_data', JSON.stringify(data));
+        }
+
+        function renderCards() {
             const grid = document.getElementById('displayGrid');
-            const qty = document.getElementById('inQty').value || 1;
-            
-            const iconFile = document.getElementById('inIcon').files[0];
-            const bgFile = document.getElementById('inBg').files[0];
+            grid.innerHTML = '';
+            const mods = getSavedData();
 
-            const iconSrc = iconFile ? await toBase64(iconFile) : 'https://via.placeholder.com/80';
-            const bgSrc = bgFile ? await toBase64(bgFile) : '';
-
-            const data = {
-                name: document.getElementById('inName').value || "Mod Baru",
-                mod: document.getElementById('inMod').value || "Unknown Modder",
-                link: document.getElementById('inLink').value || "#",
-                version: document.getElementById('inVer').value || "1.0",
-                icon: iconSrc,
-                bg: bgSrc
-            };
-
-            for (let i = 0; i < qty; i++) {
-                const id = 'id-' + Date.now() + '-' + i;
+            mods.forEach(mod => {
                 const html = `
-                    <div class="flip-card" id="${id}">
+                    <div class="flip-card" id="${mod.id}">
                         <div class="card-controls">
-                            <button class="btn-icon btn-edit" onclick="editCard('${id}')">✎</button>
-                            <button class="btn-icon btn-delete" onclick="removeCard('${id}')">✕</button>
+                            <button class="btn-icon btn-edit" onclick="editCard('${mod.id}')">✎</button>
+                            <button class="btn-icon btn-delete" onclick="removeCard('${mod.id}')">✕</button>
                         </div>
                         <div class="flip-card-inner">
-                            <div class="card-front" style="background-image: url('${data.bg}')">
-                                <div class="timer-tag">Tamat Masa: 15m</div>
-                                ${!data.bg ? '<div style="display:flex; height:100%; align-items:center; justify-content:center; color:#444">Tiada Gambar</div>' : ''}
+                            <div class="card-front" style="background-image: url('${mod.bg}')">
+                                <div class="timer-tag">Sync Aktif</div>
+                                ${!mod.bg ? '<div style="display:flex; height:100%; align-items:center; justify-content:center; color:#444">No Preview</div>' : ''}
                             </div>
                             <div class="card-back">
-                                <img src="${data.icon}" class="profile-img-circle" id="ico-${id}">
-                                <h2 id="tit-${id}">${data.name}</h2>
-                                <div class="mod-name" id="mod-${id}">By: ${data.mod}</div>
-                                <p id="ver-${id}">Versi Game: ${data.version}</p>
+                                <img src="${mod.icon}" class="profile-img-circle">
+                                <h2>${mod.name}</h2>
+                                <div class="mod-name-label">By: ${mod.modder}</div>
+                                <p>Versi: ${mod.version}</p>
                                 <hr style="width:60%; border:0.5px solid #333">
-                                <a href="${data.link}" id="lnk-${id}" class="download-icon" target="_blank">📥</a>
+                                <a href="${mod.link}" class="download-icon" target="_blank">📥</a>
                                 <small>Muat Turun Mod</small>
                             </div>
                         </div>
                     </div>
                 `;
                 grid.insertAdjacentHTML('beforeend', html);
-                setTimeout(() => removeCard(id), 15 * 60 * 1000);
+            });
+        }
+
+        async function buildCards() {
+            const qty = document.getElementById('inQty').value || 1;
+            const iconFile = document.getElementById('inIcon').files[0];
+            const bgFile = document.getElementById('inBg').files[0];
+
+            const iconSrc = iconFile ? await toBase64(iconFile) : 'https://via.placeholder.com/80';
+            const bgSrc = bgFile ? await toBase64(bgFile) : '';
+
+            const mods = getSavedData();
+
+            for (let i = 0; i < qty; i++) {
+                const newMod = {
+                    id: 'mod-' + Date.now() + '-' + i,
+                    name: document.getElementById('inName').value || "Mod Baru",
+                    modder: document.getElementById('inMod').value || "Unknown",
+                    version: document.getElementById('inVer').value || "1.0",
+                    link: document.getElementById('inLink').value || "#",
+                    icon: iconSrc,
+                    bg: bgSrc
+                };
+                mods.push(newMod);
+            }
+
+            saveData(mods);
+            renderCards();
+        }
+
+        function removeCard(id) {
+            let mods = getSavedData();
+            mods = mods.filter(m => m.id !== id);
+            saveData(mods);
+            renderCards();
+        }
+
+        function editCard(id) {
+            let mods = getSavedData();
+            const index = mods.findIndex(m => m.id === id);
+            if (index !== -1) {
+                const nName = prompt("Nama Mod Baru:", mods[index].name);
+                const nModder = prompt("Nama Modder Baru:", mods[index].modder);
+                if (nName) mods[index].name = nName;
+                if (nModder) mods[index].modder = nModder;
+                saveData(mods);
+                renderCards();
             }
         }
 
@@ -246,24 +287,8 @@
             });
         }
 
-        function removeCard(id) {
-            const el = document.getElementById(id);
-            if (el) {
-                el.style.transform = "translateY(20px)";
-                el.style.opacity = "0";
-                setTimeout(() => el.remove(), 400);
-            }
-        }
-
-        function editCard(id) {
-            const nName = prompt("Nama Mod Baru:", document.getElementById('tit-' + id).innerText);
-            const nMod = prompt("Modder Baru:", document.getElementById('mod-' + id).innerText.replace('By: ', ''));
-            const nLink = prompt("Link Download Baru:", document.getElementById('lnk-' + id).href);
-            
-            if (nName) document.getElementById('tit-' + id).innerText = nName;
-            if (nMod) document.getElementById('mod-' + id).innerText = 'By: ' + nMod;
-            if (nLink) document.getElementById('lnk-' + id).href = nLink;
-        }
+        // Jalankan render semasa mula
+        window.onload = renderCards;
 
         document.getElementById('siteBg').addEventListener('input', function() {
             document.body.style.backgroundImage = `url('${this.value}')`;
