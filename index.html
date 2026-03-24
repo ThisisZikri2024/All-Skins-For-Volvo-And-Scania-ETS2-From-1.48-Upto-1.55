@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETS2 Mods - Custom Vault</title>
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --danger: #ff4757;
+            --edit: #ffa502;
+            --card-default: #1e1e1e;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #121212;
+            color: white;
+            min-height: 100vh;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            transition: background 0.5s ease;
+        }
+
+        /* Navigasi */
+        .navbar {
+            position: fixed;
+            top: 0; width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 30px; background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(15px); z-index: 1000;
+            box-sizing: border-box; border-bottom: 1px solid #333;
+        }
+
+        /* Menu Hamburger */
+        .menu-container { position: relative; }
+        .menu-dropdown {
+            display: none;
+            position: absolute; right: 0; top: 55px;
+            background: #222; min-width: 280px; padding: 20px;
+            border-radius: 12px; border: 1px solid #444; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 1001;
+        }
+        
+        .menu-dropdown.active {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Panel Input */
+        .input-panel {
+            max-width: 900px; margin: 100px auto 30px; padding: 25px;
+            background: rgba(255,255,255,0.05); border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px);
+        }
+        .input-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; margin-bottom: 20px;
+        }
+        .file-group { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: var(--primary); }
+        input { padding: 12px; background: #000; border: 1px solid #444; color: white; border-radius: 8px; }
+
+        .main-btn {
+            width: 100%; padding: 15px; background: var(--primary);
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000;
+            font-size: 16px; transition: 0.3s;
+        }
+        .main-btn:hover { background: #00b8e6; transform: scale(1.01); }
+
+        /* Grid Kad */
+        .cards-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px; padding: 20px 40px;
+        }
+
+        /* Struktur Kad */
+        .flip-card { height: 400px; perspective: 1000px; position: relative; }
+        .flip-card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+
+        .card-front, .card-back {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; border-radius: 20px; overflow: hidden;
+            background-size: cover; background-position: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card-front { background-color: var(--card-default); }
+        .card-back { 
+            transform: rotateY(180deg); background-color: rgba(20,20,20,0.95);
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: center; padding: 25px; text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-img-circle {
+            width: 80px; height: 80px; border-radius: 50%; 
+            border: 3px solid var(--primary); margin-bottom: 15px; object-fit: cover;
+        }
+
+        .card-controls {
+            position: absolute; top: 15px; left: 15px; z-index: 100;
+            display: flex; gap: 10px;
+        }
+        .btn-icon {
+            width: 35px; height: 35px; border-radius: 10px; border: none;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 16px; transition: 0.3s;
+        }
+        .btn-edit { background: var(--edit); color: black; }
+        .btn-delete { background: var(--danger); color: white; }
+        
+        .timer-tag {
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(0,0,0,0.7); padding: 5px 12px; border-radius: 20px; font-size: 11px;
+        }
+
+        .mod-name { color: var(--primary); font-size: 14px; margin: 5px 0; font-style: italic; }
+
+        .download-icon { font-size: 50px; text-decoration: none; margin-top: 15px; transition: 0.3s; }
+        .download-icon:hover { transform: translateY(-5px); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div style="font-weight:bold; letter-spacing:1px;">ETS2 <span style="color:var(--primary)">MODS</span></div>
+        <div class="menu-container">
+            <button onclick="toggleMenu(event)" style="background:none; border:none; color:white; font-size:28px; cursor:pointer">☰</button>
+            <div class="menu-dropdown" id="myDropdown">
+                <h4 style="margin-top:0">Tetapan Laman</h4>
+                <input type="text" id="siteBg" placeholder="Link Latar Laman" style="width:90%">
+                <hr style="border:0.5px solid #444; margin:15px 0;">
+                <button onclick="alert('Terima kasih!')" style="width:100%; background:var(--danger); border:none; padding:10px; color:white; border-radius:8px; cursor:pointer; font-weight:bold">💖 DONATION</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="input-panel">
+        <h3 style="margin-top:0; color:var(--primary)">Cipta Kad Mod ETS2</h3>
+        <div class="input-grid">
+            <input type="text" id="inName" placeholder="Nama Mod (e.g. Scania S Highline)">
+            <input type="text" id="inMod" placeholder="Pencipta / Modder">
+            <input type="text" id="inVer" placeholder="Game Versi (e.g 1.50)">
+            <input type="text" id="inLink" placeholder="Link Download">
+            <input type="number" id="inQty" placeholder="Jumlah Kad" min="1">
+            
+            <div class="file-group">
+                <label>Ikon Mod (Circle):</label>
+                <input type="file" id="inIcon" accept="image/*">
+            </div>
+            
+            <div class="file-group">
+                <label>Gambar Mod (Front):</label>
+                <input type="file" id="inBg" accept="image/*">
+            </div>
+        </div>
+        <button class="main-btn" onclick="buildCards()">TERBITKAN MOD SEKARANG</button>
+    </div>
+
+    <div class="cards-grid" id="displayGrid"></div>
+
+    <script>
+        function toggleMenu(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('myDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        window.onclick = function(event) {
+            const dropdown = document.getElementById('myDropdown');
+            if (dropdown && dropdown.classList.contains('active')) {
+                if (!event.target.closest('.menu-container')) {
+                    dropdown.classList.remove('active');
+                }
+            }
+        }
+
+        async function buildCards() {
+            const grid = document.getElementById('displayGrid');
+            const qty = document.getElementById('inQty').value || 1;
+            
+            const iconFile = document.getElementById('inIcon').files[0];
+            const bgFile = document.getElementById('inBg').files[0];
+
+            const iconSrc = iconFile ? await toBase64(iconFile) : 'https://via.placeholder.com/80';
+            const bgSrc = bgFile ? await toBase64(bgFile) : '';
+
+            const data = {
+                name: document.getElementById('inName').value || "Mod Baru",
+                mod: document.getElementById('inMod').value || "Unknown Modder",
+                link: document.getElementById('inLink').value || "#",
+                version: document.getElementById('inVer').value || "1.0",
+                icon: iconSrc,
+                bg: bgSrc
+            };
+
+            for (let i = 0; i < qty; i++) {
+                const id = 'id-' + Date.now() + '-' + i;
+                const html = `
+                    <div class="flip-card" id="${id}">
+                        <div class="card-controls">
+                            <button class="btn-icon btn-edit" onclick="editCard('${id}')">✎</button>
+                            <button class="btn-icon btn-delete" onclick="removeCard('${id}')">✕</button>
+                        </div>
+                        <div class="flip-card-inner">
+                            <div class="card-front" style="background-image: url('${data.bg}')">
+                                <div class="timer-tag">Tamat Masa: 15m</div>
+                                ${!data.bg ? '<div style="display:flex; height:100%; align-items:center; justify-content:center; color:#444">Tiada Gambar</div>' : ''}
+                            </div>
+                            <div class="card-back">
+                                <img src="${data.icon}" class="profile-img-circle" id="ico-${id}">
+                                <h2 id="tit-${id}">${data.name}</h2>
+                                <div class="mod-name" id="mod-${id}">By: ${data.mod}</div>
+                                <p id="ver-${id}">Versi Game: ${data.version}</p>
+                                <hr style="width:60%; border:0.5px solid #333">
+                                <a href="${data.link}" id="lnk-${id}" class="download-icon" target="_blank">📥</a>
+                                <small>Muat Turun Mod</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', html);
+                setTimeout(() => removeCard(id), 15 * 60 * 1000);
+            }
+        }
+
+        function toBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        function removeCard(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.transform = "translateY(20px)";
+                el.style.opacity = "0";
+                setTimeout(() => el.remove(), 400);
+            }
+        }
+
+        function editCard(id) {
+            const nName = prompt("Nama Mod Baru:", document.getElementById('tit-' + id).innerText);
+            const nMod = prompt("Modder Baru:", document.getElementById('mod-' + id).innerText.replace('By: ', ''));
+            const nLink = prompt("Link Download Baru:", document.getElementById('lnk-' + id).href);
+            
+            if (nName) document.getElementById('tit-' + id).innerText = nName;
+            if (nMod) document.getElementById('mod-' + id).innerText = 'By: ' + nMod;
+            if (nLink) document.getElementById('lnk-' + id).href = nLink;
+        }
+
+        document.getElementById('siteBg').addEventListener('input', function() {
+            document.body.style.backgroundImage = `url('${this.value}')`;
+        });
+    </script>
+</body>
+</html>
